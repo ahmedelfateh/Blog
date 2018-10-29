@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+#---------------The Postgres DB starts
+
+  elfateh_blog_DB:
+    image: postgres
+    environment:
+      POSTGRES_DB: elfateh_blog_postgres
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 50ap1023
+    volumes:
+      - elfateh_blog_DB_data:/var/lib/postgresql/data/ 
+
+#---------------The Django Web starts
+  hlpr_web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: elfateh_blog_web_image
+    command: python3 manage.py runserver 10.10.10.10:80
+    volumes:
+      - .:/src
+    ports:
+      - "80:8000"
+    depends_on:
+      - elfateh_blog_DB
+
+#---------------Volume Create
+volumes:
+  elfateh_blog_DB_data: 
