@@ -1,20 +1,25 @@
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+
 from django.views.generic import TemplateView
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import CreateView
 from django.views.generic import UpdateView
 from django.views.generic import DeleteView
-from blog.forms import PostForm
-from blog.forms import CommentForm
-from blog.models import Post
-from blog.models import Comment
+from .forms import PostForm
+from .forms import CommentForm
+from .models import Post
+from .models import Comment
 
 # Create your views here.
+
+# ------------------------------ Posts ----------------------------------------------
 
 
 class AboutView(TemplateView):
@@ -61,4 +66,46 @@ class DraftListView(LoginRequiredMixin, ListView):
     model = Post
 
     def get_queryset(self):
-        return Post.objects.filter(published_date__inull=True).order_by('created_date')
+        return Post.objects.filter(published_date__isnull=True).order_by('created_date')
+# ------------------------------ Publish ----------------------------------------------
+
+
+@login_required
+def post_publish(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.publish
+    return redirect('post_detail', pk=pk)
+
+
+# ------------------------------ Comments ----------------------------------------------
+
+
+@login_required
+def add_comment_to_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.save()
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = CommentForm()
+
+    return render(request, 'blog/comment_form.html', {'form': form})
+
+
+@login_required
+def comment_approve(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    comment.approve()
+    return redirect('post_detail', pk=Comment.post.pk)
+
+
+@login_required
+def comment_remove(request, pk):
+    commnet = get_object_or_404(Comment, pk=pk)
+    post_pk = commnet.post.pk
+    commnet.delete()
+    return redirect("post_detail", pk=post_pk)

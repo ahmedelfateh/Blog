@@ -1,6 +1,6 @@
 from django import forms
-from blog.models import Post
-from blog.models import Comment
+from .models import Post
+from .models import Comment
 
 # Create your forms here
 

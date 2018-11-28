@@ -33,16 +33,16 @@ class Comment(models.Model):
     author = models.CharField(max_length=200)
     text = models.TextField()
     create_date = models.DateTimeField(default=timezone.now())
-    approved_commnets = models.BooleanField(default=True)
+    approved_commnet = models.BooleanField(default=False)
 
     # Methods
 
     def approve(self):
-        self.approved_commnets = True
+        self.approved_commnet = True
         self.save()
 
     def get_absolute_url(self):
         return reverse('post_list')
 
     def __str__(self):
-        self.text
+        return self.text
