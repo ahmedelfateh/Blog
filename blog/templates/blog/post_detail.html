@@ -1,19 +1,20 @@
-{% extends "blog/base.html" %} {% block content %}
+{% extends "blog/base.html" %}
 
-<h1 class="posttitle"> {{post.title}} </h1>
-{% if post.published_date%}
+{% block content %}
 
-<div class="date postdate">
 
-    {{post.published_date}}
-</div>
+    <h1 class="posttitle"> {{post.title}} </h1>
 
-{%else%}
+    {% if post.published_date%}
+        <div class="date postdate">
+            {{post.published_date}}
+        </div>
 
-<a class="btn btn-default" href="{% url 'post_publish' pk=post.pk %}">
-    Publish
-</a>
-{%endif%}
+    {%else%}
+    <a class="btn btn-default" href="{% url 'post_publish' pk=post.pk %}">
+        Publish
+    </a>
+    {%endif%}
 
 <p class="postcontent">
     {{post.title|safe|linebreaksbr}}

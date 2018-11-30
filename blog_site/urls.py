@@ -19,9 +19,10 @@ from django.urls import path
 from django.contrib.auth import views
 
 urlpatterns = [
-    path(r'admin/', admin.site.urls),
-    path(r'blog/', include('blog.urls')),
-    path(r'accounts/login/$', views.login, name='login'),
-    path(r'accounts/logout/$', views.logout,
-         name='logout', kwargs={'next_page': '/'})
+    path('admin/', admin.site.urls),
+    path('', include('blog.urls')),
+    # path(r'accounts/login/$', views.login, name='login'),
+    # path(r'accounts/logout/$', views.logout,
+    #      name='logout', kwargs={'next_page': '/'}),
+    path('accounts/', include('django.contrib.auth.urls'))
 ]
